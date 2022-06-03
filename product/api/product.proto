@@ -1,0 +1,48 @@
+syntax = "proto3";
+
+package api;
+
+option go_package = "./;api";
+
+service ProductService {
+    rpc GetProducts(ProductRequest) returns (ProductResponse) {}
+    rpc WriteComment(WriteCommentRequest) returns (CommentData) {}
+}
+
+message ProductRequest{
+    string name = 1;
+    string category = 2;
+    int32 limit = 3;
+    int32 page = 4;
+}
+
+message ProductResponse{
+    repeated ProductData products = 1;
+    repeated CommentData comments = 2;
+}
+
+message ProductData{
+    int32 id =1;
+    string name = 2;
+    string description = 3;
+    string category = 4;
+    string picture = 5;
+    string createdat = 6;
+    string updatedat = 7;
+}
+
+message WriteCommentRequest{
+    int32 productid = 1;
+    string message = 2;
+    int32 replyid = 3;
+    string owner = 4;
+}
+
+message CommentData{
+    int32 id = 1;
+    int32 productid = 2;
+    string message = 3;
+    string owner = 4;
+    int32 replyid = 5;
+    string createdat = 6;
+}

@@ -1,0 +1,59 @@
+version: '3'
+
+services:
+    usermoduledb:
+        image: mysql
+        ports: 
+            - "3306:3306"
+        command: --max_connections=10000
+        environment: 
+            - MYSQL_ROOT_PASSWORD=usermodule
+            - MYSQL_DATABASE=usermodule
+            - MYSQL_ROOT_HOST=%
+
+    usermodule:
+        build: 
+            context: .
+            dockerfile: ./Dockerfile
+            args: 
+                SERVICE: user
+        ports: 
+            - 50052:50052
+        depends_on:
+            - usermoduledb
+    
+    productmoduledb:
+        image: mysql
+        ports: 
+            - "33062:3306"
+        command: --max_connections=10000
+        environment: 
+            - MYSQL_ROOT_PASSWORD=productmodule
+            - MYSQL_DATABASE=productmodule
+            - MYSQL_ROOT_HOST=%
+
+    productmodule:
+        build: 
+            context: .
+            dockerfile: ./Dockerfile
+            args: 
+                SERVICE: product
+        ports: 
+            - 50051:50051
+        depends_on:
+            - productmoduledb
+    
+    gateway:
+        build: 
+            context: .
+            dockerfile: ./Dockerfile
+            args: 
+                SERVICE: gateway
+        ports: 
+            - 8000:8000
+    
+    rediscache:
+        image: redis:6.2-alpine
+        restart: always
+        ports:
+            - '6379:6379'
